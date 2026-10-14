@@ -1,0 +1,302 @@
+:root {
+  --bg: #0d1117;
+  --panel: #161b22;
+  --panel-2: #1c2330;
+  --border: #2a3340;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --accent: #4c9aff;
+  --up: #2ec27e;
+  --down: #f0616d;
+  --amber: #e3b341;
+  --r-panel: 12px;
+  --r-tile: 10px;
+  --r-ctl: 6px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.45 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+body { display: flex; flex-direction: column; }
+
+/* ---------------- Top bar + tabs ---------------- */
+.topbar {
+  display: flex; align-items: center; gap: 22px;
+  padding: 0 18px; height: 50px; flex: 0 0 auto;
+  background: var(--panel); border-bottom: 1px solid var(--border);
+}
+.brand { font-weight: 700; letter-spacing: .3px; color: var(--text); font-size: 14px; }
+.tabs { display: flex; gap: 4px; }
+.tab {
+  background: transparent; border: none; color: var(--muted);
+  padding: 8px 14px; border-radius: var(--r-ctl); cursor: pointer; font-size: 13px;
+}
+.tab:hover { color: var(--text); background: var(--panel-2); }
+.tab.active { color: var(--text); background: var(--panel-2); box-shadow: inset 0 -2px 0 var(--accent); }
+.topbar .tab { font-weight: 700; font-size: 14px; }
+
+/* The strategy's sub-tabs (Live / Backtest / Input / Log), under the top bar. */
+.subbar {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 4px;
+  padding: 6px 18px; background: var(--bg); border-bottom: 1px solid var(--border);
+}
+.subbar .tab { padding: 6px 12px; }
+
+/* ---------------- Panes + page headers ---------------- */
+.tabpane { display: none; flex: 1 1 auto; min-height: 0; flex-direction: column; padding: 18px 20px; }
+.tabpane.active { display: flex; }
+
+/* Every tab opens with the same titled header, so they read as one program. */
+.page-head {
+  flex: 0 0 auto; display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin-bottom: 16px;
+}
+.page-titles { min-width: 0; }
+.page-title { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: .2px; color: var(--text); }
+.page-sub { margin: 3px 0 0; font-size: 12.5px; color: var(--muted); }
+
+/* Scroll container for form-and-content tabs (Live / Backtest / Data input). */
+.pane-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding-bottom: 6px; }
+
+/* ---------------- Controls ---------------- */
+.controls { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.ctl { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+.ctl span { font-size: 12px; }
+.autoscroll { margin-left: auto; }
+
+/* ---------------- Buttons ---------------- */
+button.primary, button.danger, button.ghost {
+  border: 1px solid var(--border); border-radius: var(--r-ctl); padding: 8px 16px;
+  cursor: pointer; background: var(--panel-2); color: var(--text); font-size: 13px;
+}
+button.primary { background: var(--accent); border-color: var(--accent); color: #08111f; font-weight: 600; }
+button.danger { color: var(--down); border-color: #43303a; }
+button.ghost { color: var(--muted); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button:hover:not(:disabled) { filter: brightness(1.08); }
+
+/* Secondary action inside a panel/section (Refresh, Export …). */
+.btn-secondary {
+  border: 1px solid var(--border); border-radius: var(--r-ctl); padding: 6px 13px;
+  cursor: pointer; background: var(--panel-2); color: var(--text);
+  font-size: 12px; font-weight: 600;
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+.hidden { display: none !important; }
+
+/* ---------------- Panels (shared framed container) ---------------- */
+.panel {
+  position: relative; margin-bottom: 14px; padding: 16px 18px;
+  background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-panel);
+}
+.panel-head {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.panel-title { font-size: 13px; font-weight: 700; letter-spacing: .2px; color: var(--text); }
+/* the status message fills the middle; a trailing button sits on the right */
+.panel-head .bt-dim { flex: 1; font-size: 11.5px; }
+.bt-dim { color: var(--muted); font-weight: 400; }
+.bt-dim.err { color: var(--down); }
+
+/* ---------------- Section label ---------------- */
+.section-label {
+  flex: 0 0 auto;
+  font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+  color: var(--muted); margin: 20px 2px 10px;
+}
+
+/* ---------------- Hero chart card ---------------- */
+.hero {
+  flex: 1 1 auto; min-height: 240px;
+  display: flex; flex-direction: column;
+  background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-panel);
+  padding: 14px 16px 10px;
+}
+.hero-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 6px; }
+.hero-titles { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hero-title { font-weight: 700; font-size: 15px; color: var(--text); }
+.hero-sub { font-size: 12px; color: var(--muted); }
+.hero-stat { display: flex; align-items: baseline; gap: 12px; white-space: nowrap; }
+.hero-price { font-size: 26px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
+.hero-chg { font-size: 15px; font-variant-numeric: tabular-nums; }
+.hero-chg.up { color: var(--up); }
+.hero-chg.down { color: var(--down); }
+.hero-chart { position: relative; flex: 1 1 auto; min-height: 0; }
+/* the chart canvas fills its .hero-chart box */
+.chart-fill, #bt-eq-chart, #live-eq-chart { position: absolute; inset: 0; }
+
+.tip {
+  position: absolute; pointer-events: none; z-index: 2;
+  background: #0a0e14; border: 1px solid var(--border); border-radius: var(--r-ctl);
+  padding: 5px 8px; font-size: 12px; color: var(--text); font-variant-numeric: tabular-nums;
+  white-space: nowrap; transform: translate(12px, -50%);
+}
+
+/* ---------------- Strategy / live parameter form ---------------- */
+/* Sections sit side by side and are sized to pack onto a single row. */
+.bt-params { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px 16px; }
+.sp-section { flex: 0 1 auto; display: flex; flex-direction: column; gap: 6px; }
+.sp-head {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+  color: var(--muted); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+  padding-bottom: 5px; border-bottom: 1px solid var(--border);
+}
+.sp-hint { font-weight: 400; text-transform: none; letter-spacing: 0; opacity: .7; }
+.sp-grid { display: grid; grid-template-columns: repeat(var(--sp-cols, 1), max-content max-content); column-gap: 7px; row-gap: 6px; align-content: start; }
+.sp-field { display: contents; }
+.sp-lbl { font-size: 11.5px; color: var(--muted); white-space: nowrap; align-self: center; }
+.sp-in {
+  width: 66px; min-width: 0;
+  background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+  border-radius: var(--r-ctl); padding: 4px 6px; font-variant-numeric: tabular-nums; text-align: right;
+}
+.sp-in:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(76, 154, 255, .18); }
+select.sp-in { width: auto; max-width: 96px; text-align: left; cursor: pointer; }
+
+.bt-run { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+#bt-run-msg { font-size: 11.5px; }
+
+/* ---------------- Backtest results ---------------- */
+.bt-empty { color: var(--muted); padding: 24px 4px; font-size: 14px; }
+.bt-results { width: 100%; }
+.bt-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 10px; margin-bottom: 4px; }
+.bt-tile {
+  background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-tile);
+  padding: 11px 13px; display: flex; flex-direction: column; gap: 3px;
+}
+.bt-tile-v { font-size: 20px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1.15; }
+.bt-tile-v.up { color: var(--up); }
+.bt-tile-v.down { color: var(--down); }
+.bt-tile-l { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.bt-results .hero { height: 320px; flex: none; margin-top: 16px; }
+.bt-trades-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+/* ---------------- Data tables (trades; strategy UIs reuse it) ---------------- */
+.data-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--r-panel); }
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th, .data-table td { padding: 7px 13px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--border); }
+.data-table thead th { color: var(--muted); font-weight: 600; background: var(--panel); }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table th:first-child, .data-table td:first-child,
+.data-table th:nth-child(2), .data-table td:nth-child(2) { text-align: left; }
+.data-table td { font-variant-numeric: tabular-nums; }
+.data-table tbody tr:hover td { background: var(--panel-2); }
+
+/* Trades table (scrolls within a fixed height, sticky header) */
+.bt-table-wrap { overflow: auto; max-height: 460px; border: 1px solid var(--border); border-radius: var(--r-panel); }
+.bt-table th, .bt-table td { text-align: right; }
+.bt-table thead th { position: sticky; top: 0; z-index: 1; }
+.bt-table th:first-child, .bt-table td:first-child,
+.bt-table th:nth-child(2), .bt-table td:nth-child(2),
+.bt-table th:nth-child(3), .bt-table td:nth-child(3) { text-align: left; }
+.bt-table td.bt-long { color: var(--up); font-weight: 600; text-align: left; }
+.bt-table td.bt-short { color: var(--down); font-weight: 600; text-align: left; }
+.bt-table th:nth-child(8), .bt-table td:nth-child(8),
+.bt-table th:nth-child(9), .bt-table td:nth-child(9) {
+  text-align: left; white-space: normal; max-width: 220px;
+  color: var(--muted); font-size: .92em;
+}
+
+/* ---------------- Status pill (Log) ---------------- */
+.pill { padding: 4px 12px; border-radius: 999px; font-size: 12px; border: 1px solid var(--border); }
+.pill.idle { color: var(--muted); }
+.pill.running { color: var(--up); border-color: #23472f; background: #10261a; }
+
+/* ---------------- Live tab ---------------- */
+.live-results { width: 100%; }
+.live-head-right { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+
+/* Stale-data warning banner (hidden unless the feed has gone quiet). */
+.live-stale {
+  margin-bottom: 14px; padding: 11px 16px; border-radius: var(--r-panel);
+  font-size: 13px; font-weight: 600; color: #ffcf7a;
+  background: rgba(240, 173, 78, .10); border: 1px solid rgba(240, 173, 78, .45);
+}
+
+/* Hero — the current signal, first thing you see. */
+.live-hero {
+  display: flex; flex-direction: column; gap: 6px;
+  background: var(--panel); border: 1px solid var(--border);
+  border-left: 4px solid var(--muted); border-radius: var(--r-panel);
+  padding: 20px 24px; margin-bottom: 14px;
+}
+.live-hero.live-long  { border-left-color: var(--up); }
+.live-hero.live-short { border-left-color: var(--down); }
+.live-hero.live-flat  { border-left-color: var(--muted); }
+.live-sig-label { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.live-sig-state { font-size: 38px; font-weight: 800; line-height: 1.05; letter-spacing: .01em; }
+.live-sig-state.live-long  { color: var(--up); }
+.live-sig-state.live-short { color: var(--down); }
+.live-sig-state.live-flat  { color: var(--text); }
+.live-sig-reason { font-size: 13px; color: var(--muted); }
+.live-updated { margin-top: 4px; font-size: 12px; color: var(--muted); }
+/* The forming bar's signal — changes until the bar closes, never alerted. */
+.live-provisional { font-size: 13px; color: var(--muted); }
+.live-provisional b { color: var(--text); }
+.live-provisional.differs { color: var(--text); }
+.live-provisional.differs b.live-long  { color: var(--up); }
+.live-provisional.differs b.live-short { color: var(--down); }
+
+/* A chart inside a scrolling tab: fixed height in the scroll flow. */
+.live-chart { flex: 0 0 auto; height: 340px; margin: 14px 0; }
+
+/* Side-by-side panels — at most two per row, stacking when narrow (strategy
+   tabs reuse this too). */
+.live-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(max(300px, calc(50% - 6px)), 1fr)); gap: 12px; margin-bottom: 14px; }
+.live-panel { margin-bottom: 0; }
+
+/* Shared label/value metric rows (Position panel; strategy UIs reuse them). */
+.live-metrics { display: grid; grid-template-columns: 1fr; gap: 0; }
+.live-metric {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, .04);
+}
+.live-metric:last-child { border-bottom: none; }
+.live-metric-gap { height: 8px; margin-top: 4px; border-top: 1px solid var(--border); }
+.lm-lbl { font-size: 12px; color: var(--muted); }
+.lm-val { font-size: 13px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; text-align: right; }
+.lm-val.up { color: var(--up); }
+.lm-val.down { color: var(--down); }
+.lm-val.dim { color: var(--muted); font-weight: 400; }
+
+/* Collapsible sections (equity curve, trades, strategy sections). */
+.live-section {
+  background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-panel);
+  overflow: hidden; margin-bottom: 12px;
+}
+.live-section > summary {
+  display: flex; align-items: baseline; gap: 8px; cursor: pointer; list-style: none;
+  padding: 13px 16px; user-select: none;
+}
+.live-section > summary::-webkit-details-marker { display: none; }
+.live-section > summary:hover { background: var(--panel-2); }
+.ls-chev { color: var(--muted); font-size: 11px; transition: transform .15s ease; flex: 0 0 auto; }
+.live-section[open] > summary .ls-chev { transform: rotate(90deg); }
+.ls-title { font-size: 13px; font-weight: 700; letter-spacing: .2px; color: var(--text); }
+.ls-sub { margin-left: auto; text-align: right; }
+.live-section-body { padding: 4px 16px 14px; border-top: 1px solid var(--border); }
+.live-params-section { margin-top: 4px; }
+
+/* A chart inside a collapsible section: drop the inner card chrome so it blends
+   into the section (no double border) and let it fill the body. */
+.live-section-chart { padding: 10px 12px 12px; }
+.live-section-chart .live-chart { margin: 0; }
+.live-section-chart .hero { border: none; background: transparent; border-radius: 0; padding: 0; }
+
+/* ---------------- Log ---------------- */
+.log {
+  flex: 1 1 auto; min-height: 0; margin: 0; overflow: auto;
+  background: #0a0e14; border: 1px solid var(--border); border-radius: var(--r-panel);
+  padding: 12px; font: 12px/1.5 "Cascadia Code", Consolas, monospace; color: #c9d1d9;
+  white-space: pre-wrap; word-break: break-word;
+}
+.log .err { color: var(--down); }
+.log .sys { color: var(--accent); }

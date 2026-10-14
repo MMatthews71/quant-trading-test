@@ -1,0 +1,16 @@
+{
+  "name": "quant-trading-app",
+  "version": "1.0.0",
+  "description": "Electron front end for the quant trading engine: live signal, backtest, data input and updater log for the active strategy",
+  "main": "main.js",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "31.7.7",
+    "lightweight-charts": "4.2.3",
+    "sql.js": "1.10.3"
+  }
+}

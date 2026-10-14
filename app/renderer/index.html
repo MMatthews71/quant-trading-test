@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+  <title>Quant Trading</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Top level: one tab per strategy (labelled with its manifest "symbol").
+       Everything below the sub-tab bar belongs to that strategy. -->
+  <header class="topbar">
+    <nav class="tabs" id="strategy-tabs">
+      <button class="tab active" id="strategy-tab"></button>
+    </nav>
+  </header>
+  <!-- The strategy's sub-tabs. Live / Backtest / Log are generic; the strategy's
+       ui/ui.js adds its own views to Live and fills Input (shown only then). -->
+  <nav class="subbar tabs" id="subtabs">
+    <button class="tab active" data-tab="live">Live</button>
+    <button class="tab" data-tab="backtest">Backtest</button>
+    <button class="tab" data-tab="input" hidden>Input</button>
+    <button class="tab" data-tab="log">Log</button>
+  </nav>
+
+  <!-- ---------------- Live tab ---------------- -->
+  <!-- Current signal off the latest data, computed by `quant.py live` (reuses the
+       backtest math) with its OWN parameter set (live_params.json). Recomputes
+       automatically whenever quant.db updates. Layout reads top-to-bottom:
+       what the signal is (hero) -> where you stand + the live params ->
+       equity curve -> trade history. The strategy's own live views (from its
+       ui/ui.js) sit right under the hero. -->
+  <section id="tab-live" class="tabpane active">
+    <div class="page-head">
+      <div class="page-titles">
+        <h1 class="page-title">Live signal</h1>
+      </div>
+      <div class="live-head-right">
+        <span id="live-market-pill" class="pill idle">—</span>
+      </div>
+    </div>
+
+    <div class="pane-scroll">
+      <!-- Warns when the data feed has gone quiet (the updater/API isn't pushing
+           fresh bars), so a stale signal isn't mistaken for a live one. -->
+      <div id="live-stale" class="live-stale" hidden></div>
+
+      <div id="live-empty" class="bt-empty" hidden></div>
+
+      <div id="live-results" class="live-results hidden">
+        <!-- Hero: the one thing you look at first. -->
+        <div class="live-hero" id="live-signal-card">
+          <span class="live-sig-label">Confirmed signal</span>
+          <span class="live-sig-state" id="live-sig-state">—</span>
+          <span class="live-sig-reason" id="live-sig-reason"></span>
+          <span class="live-provisional" id="live-provisional" hidden></span>
+          <span class="live-updated" id="live-updated"></span>
+        </div>
+
+        <!-- The strategy's own live views (from its ui/ui.js). -->
+        <div id="live-strategy"></div>
+
+        <!-- Where you stand, and the tunable inputs. -->
+        <div class="live-cols">
+          <div class="panel live-panel">
+            <div class="panel-head"><span class="panel-title">Position &amp; performance</span></div>
+            <div id="live-position"></div>
+          </div>
+          <div class="panel live-panel">
+            <div class="panel-head">
+              <span class="panel-title">Live parameters</span>
+              <span id="live-params-msg" class="bt-dim"></span>
+            </div>
+            <div id="live-params" class="bt-params"></div>
+          </div>
+        </div>
+
+        <!-- Strategy equity curve (theoretical instant-fill, from the live signal). -->
+        <details class="live-section" id="live-eq-details" open>
+          <summary>
+            <span class="ls-chev">▸</span><span class="ls-title">Strategy equity curve</span>
+          </summary>
+          <div class="live-section-body live-section-chart">
+            <div class="hero live-chart" id="live-eq-card">
+              <div class="hero-head">
+                <div class="hero-titles">
+                  <span class="hero-sub" id="live-eq-sub"></span>
+                </div>
+                <div class="hero-stat" id="live-eq-stat"></div>
+              </div>
+              <div class="hero-chart">
+                <div id="live-eq-chart"></div>
+                <div id="live-eq-tip" class="tip hidden"></div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Trade history. -->
+        <details class="live-section" open>
+          <summary>
+            <span class="ls-chev">▸</span>
+            <span class="ls-title">Previous trades <span id="live-trades-count" class="bt-dim"></span></span>
+            <span class="bt-export-wrap ls-sub">
+              <span id="live-export-msg" class="bt-dim"></span>
+              <button id="live-export" class="btn-secondary" type="button" title="Save every bar and every column of the live recompute as a CSV">Export CSV</button>
+            </span>
+          </summary>
+          <div class="live-section-body">
+            <div class="bt-table-wrap"><table id="live-table" class="data-table bt-table"></table></div>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- Backtest tab ---------------- -->
+  <!-- Read-only viewer of the strategy's data/backtest.json,
+       plus the tunable strategy inputs. Inputs are edited here, saved to
+       the strategy's backtest_params.json, read by `quant.py backtest`. -->
+  <section id="tab-backtest" class="tabpane">
+    <div class="page-head">
+      <div class="page-titles">
+        <h1 class="page-title">Backtest</h1>
+      </div>
+    </div>
+
+    <div class="pane-scroll">
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">Strategy parameters</span>
+          <span id="bt-params-msg" class="bt-dim"></span>
+        </div>
+        <div id="bt-params" class="bt-params"></div>
+        <div class="bt-run">
+          <button id="bt-run" class="primary">Run backtest</button>
+          <span id="bt-run-msg" class="bt-dim"></span>
+        </div>
+      </div>
+
+      <div id="bt-empty" class="bt-empty" hidden></div>
+
+      <div id="bt-results" class="bt-results hidden">
+        <div class="bt-stats" id="bt-stats"></div>
+        <div class="hero">
+          <div class="hero-head">
+            <div class="hero-titles">
+              <span class="hero-title">Strategy equity curve</span>
+              <span class="hero-sub" id="bt-eq-sub"></span>
+            </div>
+            <div class="hero-stat" id="bt-eq-stat"></div>
+          </div>
+          <div class="hero-chart">
+            <div id="bt-eq-chart"></div>
+            <div id="bt-eq-tip" class="tip hidden"></div>
+          </div>
+        </div>
+        <div class="section-label bt-trades-head">
+          <span>Trades <span id="bt-trades-count" class="bt-dim"></span></span>
+          <span class="bt-export-wrap">
+            <span id="bt-export-msg" class="bt-dim"></span>
+            <button id="bt-export" class="btn-secondary" type="button" title="Save every bar and every column of the last backtest as a CSV">Export CSV</button>
+          </span>
+        </div>
+        <div class="bt-table-wrap"><table id="bt-table" class="data-table bt-table"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- Input tab ---------------- -->
+  <!-- The strategy's hand-maintained inputs, built entirely by its ui/ui.js. -->
+  <section id="tab-input" class="tabpane">
+    <div class="page-head">
+      <div class="page-titles">
+        <h1 class="page-title">Input</h1>
+      </div>
+    </div>
+    <div class="pane-scroll" id="input-root"></div>
+  </section>
+
+  <!-- ---------------- Log tab ---------------- -->
+  <section id="tab-log" class="tabpane">
+    <div class="page-head">
+      <div class="page-titles">
+        <h1 class="page-title">Log</h1>
+      </div>
+      <span id="updater-state" class="pill idle">stopped</span>
+    </div>
+
+    <div class="controls">
+      <button id="start" class="primary">Start updater</button>
+      <button id="stop" class="danger" disabled>Stop updater</button>
+      <label class="ctl autoscroll">
+        <input type="checkbox" id="autoscroll" checked /><span>Auto-scroll</span>
+      </label>
+      <button id="clearlog" class="ghost">Clear</button>
+    </div>
+    <pre id="log" class="log"></pre>
+  </section>
+
+  <script src="../node_modules/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

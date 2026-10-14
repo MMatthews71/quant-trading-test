@@ -1,0 +1,11 @@
+# Python packages the engine needs (backtest, live signal, updater).
+# The Electron charts read quant.db directly and do NOT need these; the
+# backtest, live signal and Bloomberg updater do. run.bat installs these
+# automatically into the Python it picks. Versions are the known-good set the
+# program was developed against; loosen the pins if a newer wheel is required.
+#
+# blpapi is NOT listed here — it only comes from Bloomberg's own package index
+# and is only needed for the live updater. run.bat installs it separately.
+pandas>=2.2,<3
+numpy>=2.1,<3
+exchange_calendars>=4.13,<5
